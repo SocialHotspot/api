@@ -14,7 +14,7 @@ from unifi_control.models import UnifiController
 @csrf_exempt
 def hotspot(request, id):
 	try:
-		hotspot = Hotspot.objects.get(external_id = id)
+		hotspot = Hotspot.objects.filter(external_id = id).first()
 		
 		client = hotspot.client
 		portal = client.portal
