@@ -24,6 +24,8 @@ def hotspot(request, id):
 	except ObjectDoesNotExist:
 		data = { 'error': 'No hotspot found' }
 		
+		return HttpResponse(json.dumps(data), content_type='application/json')
+		
 	if request.method == 'POST':
 		try:
 			data = json.loads(request.body)
