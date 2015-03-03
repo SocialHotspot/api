@@ -13,14 +13,13 @@ from unifi_control.models import UnifiController
 
 @csrf_exempt
 def hotspot(request, id):
-	try:
-		hotspot = Hotspot.objects.filter(external_id = id).first()
+	hotspot = Hotspot.objects.filter(external_id = id).first()
 		
-	except ObjectDoesNotExist:
+	if not hotspot:
 		data = { 'error': 'No hotspot found' }
 		
 		return HttpResponse(json.dumps(data), content_type='application/json')
-		
+	
 	client = hotspot.client
 	portal = client.portal
 	
