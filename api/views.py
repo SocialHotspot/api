@@ -16,15 +16,15 @@ def hotspot(request, id):
 	try:
 		hotspot = Hotspot.objects.filter(external_id = id).first()
 		
-		client = hotspot.client
-		portal = client.portal
-		
-		controller = client.unifi_controller.controller(client.unifi_site)
-		
 	except ObjectDoesNotExist:
 		data = { 'error': 'No hotspot found' }
 		
 		return HttpResponse(json.dumps(data), content_type='application/json')
+		
+	client = hotspot.client
+	portal = client.portal
+	
+	controller = client.unifi_controller.controller(client.unifi_site)
 		
 	if request.method == 'POST':
 		try:
