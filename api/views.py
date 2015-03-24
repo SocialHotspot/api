@@ -18,7 +18,7 @@ def hotspot(request, id):
 	if not hotspot:
 		data = { 'error': 'No hotspot found' }
 		
-		return HttpResponse(json.dumps(data), content_type='application/json')
+		return HttpResponse(json.dumps(data), status=404, content_type='application/json')
 	
 	client = hotspot.client
 	portal = client.portal
@@ -60,7 +60,7 @@ def hotspot(request, id):
 					else:
 						data = { 'error': 'The WPA password should have a length of at least 8 characters.' }
 						
-						return HttpResponse(json.dumps(data), content_type='application/json')
+						return HttpResponse(json.dumps(data), status=400, content_type='application/json')
 					
 			portal.save()
 	
