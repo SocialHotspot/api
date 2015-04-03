@@ -44,12 +44,23 @@ def hotspot(request, id):
 				if 'page_id' in facebook.keys() and facebook['page_id']:
 					portal.facebook_page_id = facebook['page_id']
 					
+			if 'network_name' in data.keys():
+				network_name = data['network_name']
+				
+				controller.set_guest_ssid(network_name)
+					
 			if 'network_password' in data.keys():
 				network_password = data['network_password']
 				
-				if 'enabled' in network_password.keys():
-					if not network_password['enabled']:
-						portal.wpa_password = None
+				if 'enabled' in network_password.keys() and not network_password['enabled']:
+					portal.wpa_password = None
+					
+					controller.set_wpa_password(portal.wpa_password)
+						
+				if 'wpa_password' in network_password.keys() and not len(network_password['wpa_password']):
+					portal.wpa_password = None
+					
+					controller.set_wpa_password(portal.wpa_password)
 					
 				if 'wpa_password' in network_password.keys() and network_password['wpa_password']:
 				
@@ -61,7 +72,7 @@ def hotspot(request, id):
 						data = { 'error': 'The WPA password should have a length of at least 8 characters.' }
 						
 						return HttpResponse(json.dumps(data), status=400, content_type='application/json')
-					
+						
 			portal.save()
 	
 	# Output
@@ -94,5 +105,11 @@ def hotspot(request, id):
 	
 	# Network password
 	data['network_password'] = { "enabled": portal.network_password_enabled(), "wpa_password": portal.wpa_password }
+	
+	# Network SSID
+	wlan_conf = controller.get_wlan_conf()
+	guest_wlan = [wlan for wlan in wlan_conf if wlan['is_guest']][0]
+	
+	data['network_name'] = guest_wlan['name']
 	
 	return HttpResponse(json.dumps(data), content_type='application/json')
